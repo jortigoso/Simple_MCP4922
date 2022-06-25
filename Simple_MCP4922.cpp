@@ -72,13 +72,16 @@ bool Simple_MCP4922::analogWrite(uint16_t data, uint8_t channel)
 
   data &= 0x0FFF; //Cleans the top bits 
   data |= (_channel << 15);
-  data |= (_gain   << 13);
-  data |= (1       << 12); //Sets SHDN to 1 (enable output).
+  data |= (1        << 12); //Sets SHDN to 1 (enable output).
 
-  if(_buffered) data |= (1  << 14);
-  else          data |= (0  << 14);
+  if(_gain == 1)       data |= (1  << 13);
+  else if (_gain == 2) data |= (0 << 13);
+
+  if(_buffered)        data |= (1  << 14);
+  else                 data |= (0  << 14);
 
   transfer(data);
+
   return true;
 }
 
@@ -133,7 +136,6 @@ void Simple_MCP4922::freeMISO(){
   }
   else
   {
-  
     //PIN 12
     PORTC_PCR7 = (PORTC_PCR7 & 0xFFFFF8FF) | (001 << 8);
   }

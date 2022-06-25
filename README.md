@@ -4,7 +4,7 @@
 
 This library provides a simple and fast way to set up a MCP4922 DAC on a Teensy 3.2 board. The code is simple and short, it was designed to fulfill an specific need of disabling some of the hardware pins used by the SPI interface, but it ended up being *kind of* redundant since (*re*)setting it does the job in a similar way. 
 
-This library is based on [Bob's Tillart MCP_DAC library](https://link-url-here.org) while doing some of the operations in a slightly different way.
+This library is based on [Bob's Tillart MCP_DAC library](https://github.com/RobTillaart/MCP_DAC) while doing some of the operations in a slightly different way.
 
 ## Functionalities
 
@@ -17,4 +17,79 @@ This library is based on [Bob's Tillart MCP_DAC library](https://link-url-here.o
 ### Settings
 
 - **setBuffer(bool buffered)** *True* enables buffered outputs while *False* disables them.
-- **setGain(uint8_t gain)** 
+- **setGain(uint8_t gain)** The attribute *_gain* should be either 1 or 2, usually I would have had 0 or 1 for gain 1 and 2 respectively, but the DAC sets gain to 1 when sent a high level bit, so I thought it was more convenient this way. 
+- **end()** can be used to call SPI.end() to disable the interface.
+
+### Disabling certain pins of the interface
+
+A SPI hardware interface tipically has 4 pins: MISO for data input, MOSI for data output, CSK for the clock and CS for selecting the peripheral device.
+
+For example, seting MISO pin as pinMode(CS, OUTPUT) will give the GPIO the control of the pin even tho the SPI interface was using it. Athough this *works*, I included dedicated functions to change the pin control "completely". A multiplexor sets which system controls each pin, so its possible to write to the register in order to modify which system can use it.
+
+    // PORTx_PCRn, for pin 12 (default MOSI):
+    PORTC_PCR7 = (PORTC_PCR7 & 0xFFFFF8FF) | (001 << 8);
+
+Bits 8-10 in the register control the multiplexor as shown in the [manual](https://www.pjrc.com/teensy/K20P64M72SF1RM.pdf) for Tensy 3.2 on page 228.
+
+- **freeMOSI()** Gives GPIO the control of pin 11 or pin 7 if alternatePins is *True*.
+- **freeMISO()** Gives GPIO the control of pin 12 or pin 8 if alternatePins is *True*.
+- **freeCSK()** Gives GPIO the control of pin 13 or pin 14 if alternatePins is *True*.
+- Freeing CS is not necessary since its not controlled by the library.
+
+## Setting up the DAC
+
+**SHDN** pin should be connected to high level since it enables the output. If you have spare pins a microcontroller pin can be used to switch between *enabled* and *disabled* in order to save power.
+
+The rest of the pins are listed in the datasheet, a full list of connections for basic operation is provided below.
+
+<center>
+
+| DAC | Connection                |
+|-----|---------------------------|
+| 1   | VDD                       |
+| 2   | x                         |
+| 3   | CS: Teensy3.2 Pin 10      |
+| 4   | SCK: Teensy 3.2 Pin 13    |
+| 5   | SDI: Teensy 3.2 Pin 11    |
+| 6   | x                         |
+| 7   | x                         |
+| 8   | GND                       |
+| 9   | VDD                       |
+| 10  | Channel 2 Ouput           |
+| 11  | Channel 2 Reference (VDD) |
+| 12  | GND                       |
+| 13  | Channel 1 Reference (VDD) |
+| 14  | Channel 1 Output          |
+
+</center>
+
+
+    #include "Simple_MCP4922.h"
+
+    #define T_PIN_CS 10
+
+    uint16_t data_array[6] = {0, 819, 1638, 2457, 3276, 4095};
+    uint8_t i = 0;
+
+    // Create a Simple_MCP4922 object.
+    Simple_MCP4922 DAC;
+
+    void setup() 
+    {    
+      // Start the SPI hardware controller.
+      // The Simple_MCP4922 library takes care of importing
+      // the SPI and setting up the chip select pin.
+      DAC.begin(T_PIN_CS, false);
+    }
+
+    void loop() 
+    {
+
+      // Writes to channel 1
+      DAC.analogWrite(data_array[i], 1);
+      if(i < 5) i++;
+      else i = 0;
+
+      delay(600); //msas
+      
+    }
