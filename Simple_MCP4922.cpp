@@ -27,7 +27,6 @@ void Simple_MCP4922::setAlternatePins(bool MOSI, bool MISO, bool SCK, bool CS)
   //_altCS   = CS;
 }
 
-//TODO: Maybe ADD boolean type in case ALT cant be defined
 void Simple_MCP4922::begin(uint8_t CS, bool alternatePins)
 {
   _pinCS         =  CS;
@@ -64,25 +63,32 @@ void Simple_MCP4922::begin(uint8_t CS, bool alternatePins)
 bool Simple_MCP4922::analogWrite(uint16_t data, uint8_t channel)
 {
 
-  //uint16_t data   = data;
-  uint8_t _channel = channel - 1; 
-  //Include settings in the data packet
   //| CH | Buff | G  | SH | D11 | D10 | D9 | D8 | D7 | D6 | D5 | D4 | D3 | D2 | D1 | D0 |
   //| 15 | 14   | 13 | 12 | 11  | 10  | 9  | 8  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  |
 
-  data &= 0x0FFF; //Cleans the top bits 
-  data |= (_channel << 15);
+  //data &= 0x0FFF;         //Cleans the top bits 
+  data |= (channel  << 15);
   data |= (1        << 12); //Sets SHDN to 1 (enable output).
-
-  if(_gain == 1)       data |= (1  << 13);
-  else if (_gain == 2) data |= (0 << 13);
-
+  
   if(_buffered)        data |= (1  << 14);
   else                 data |= (0  << 14);
+
+  if(_gain == 1)       data |= (1 << 13);
+  else if (_gain == 2) data |= (0 << 13);
 
   transfer(data);
 
   return true;
+}
+
+void Simple_MCP4922::analogWriteFastCH1(uint16_t data)
+{
+  transfer(data & 0x5FFF); 
+}
+
+void Simple_MCP4922::analogWirteFastCH2(uint16_t data)
+{
+  transfer(data & 0xDFFF);
 }
 
 void Simple_MCP4922::transfer(uint16_t data)

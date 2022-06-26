@@ -24,11 +24,15 @@ public:
   void setAlternatePins(bool MOSI, bool MISO, bool SCK, bool CS);
   
   bool analogWrite(uint16_t data, uint8_t channel);
+
+  void analogWriteFastA(uint16_t data);
+
+  void analogWriteFastB(uint16_t data);
   
   // Data outputs can be buffered (true) or non-buffered (false)
   void setBuffer(bool buffered);
 
-  //  Gain can be 1 or 2 (maximum output voltage can never exceed VCC level)
+  //  Gain can be 1 or 2,  (maximum output voltage can never exceed VCC level)
   void setGain(uint8_t gain);
 
   void freeMOSI();

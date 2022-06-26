@@ -36,33 +36,35 @@ Bits 8-10 in the register control the multiplexor as shown in the [manual](https
 - **freeCSK()** Gives GPIO the control of pin 13 or pin 14 if alternatePins is *True*.
 - Freeing CS is not necessary since its not controlled by the library.
 
+## Ouputting data
+
+- **analogWrite(uint16_t data, uint8_t channel)** Channel can be either 0 (OutputA) or 1 (OutputB).
+- **analogWriteFastCH1(uint16_t data)** and **analogWriteFastCH2(uint16_t data)** ignore buffer and gain settings and use the default values (unbuffered and G=1).
+
 ## Setting up the DAC
 
 **SHDN** pin should be connected to high level since it enables the output. If you have spare pins a microcontroller pin can be used to switch between *enabled* and *disabled* in order to save power.
 
 The rest of the pins are listed in the datasheet, a full list of connections for basic operation is provided below.
 
-<center>
+| DAC   | PIN | Connection                |
+|-------|-----|---------------------------|
+| VDD   | 1   | VDD                       |
+| NC    | 2   | x                         |
+| !CS   | 3   | CS: Teensy3.2 Pin 10      |
+| SCK   | 4   | SCK: Teensy 3.2 Pin 13    |
+| SDI   | 5   | SDI: Teensy 3.2 Pin 11    |
+| NC    | 6   | x                         |
+| NC    | 7   | x                         |
+| !LDAC | 8   | GND                       |
+| !SHDN | 9   | VDD                       |
+| VoutB | 10  | Channel 2 Ouput           |
+| VrefB | 11  | Channel 2 Reference (VDD) |
+| VSS   | 12  | GND                       |
+| VrefA | 13  | Channel 1 Reference (VDD) |
+| VrefB | 14  | Channel 1 Output          |
 
-| DAC | Connection                |
-|-----|---------------------------|
-| 1   | VDD                       |
-| 2   | x                         |
-| 3   | CS: Teensy3.2 Pin 10      |
-| 4   | SCK: Teensy 3.2 Pin 13    |
-| 5   | SDI: Teensy 3.2 Pin 11    |
-| 6   | x                         |
-| 7   | x                         |
-| 8   | GND                       |
-| 9   | VDD                       |
-| 10  | Channel 2 Ouput           |
-| 11  | Channel 2 Reference (VDD) |
-| 12  | GND                       |
-| 13  | Channel 1 Reference (VDD) |
-| 14  | Channel 1 Output          |
-
-</center>
-
+The code below shows *Simple_MCP4922_example.ino*. It's written to output values on channel A (or 1), connections to the DAC should be as shown in the table above.
 
     #include "Simple_MCP4922.h"
 
