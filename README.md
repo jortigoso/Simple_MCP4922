@@ -2,7 +2,7 @@
 
 ## Simple MCP4922
 
-This library provides a simple and fast way to set up a MCP4922 DAC on a Teensy 3.2 board. The code is simple and short, it was designed to fulfill an specific need of disabling some of the hardware pins used by the SPI interface, but it ended up being *kind of* redundant since (*re*)setting it does the job in a similar way. 
+This library provides a simple and fast way to set up a MCP4922 DAC on a Teensy 3.2 board. The code is simple and short, it was designed to fulfill an specific need for a project, disabling some of the hardware pins used by the SPI interface. But it ended up being *kind of* redundant since (*re*)setting the pin does the job in a similar way. 
 
 This library is based on [Bob's Tillart MCP_DAC library](https://github.com/RobTillaart/MCP_DAC) while doing some of the operations in a slightly different way.
 
