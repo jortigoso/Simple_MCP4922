@@ -83,12 +83,14 @@ bool Simple_MCP4922::analogWrite(uint16_t data, uint8_t channel)
 
 void Simple_MCP4922::analogWriteFastCH1(uint16_t data)
 {
-  transfer(data & 0x5FFF); 
+  // 0x3 = 0011 (CH=0, BUFF=0, GA=1, SHDN=1)
+  transfer(data | 0x3000); 
 }
 
-void Simple_MCP4922::analogWirteFastCH2(uint16_t data)
+void Simple_MCP4922::analogWriteFastCH2(uint16_t data)
 {
-  transfer(data & 0xDFFF);
+  // 0x3 = 1011 (CH=1, BUFF=0, GA=1, SHDN=1)
+  transfer(data | 0xB000);
 }
 
 void Simple_MCP4922::transfer(uint16_t data)

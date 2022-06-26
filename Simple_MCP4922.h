@@ -8,8 +8,7 @@
 #include "Arduino.h"
 #include <SPI.h>
 
-//#if defined(__MK20DX256__)
-//#endif
+#define MCP4922_MAX 4095
 
 class Simple_MCP4922
 { 
@@ -25,9 +24,9 @@ public:
   
   bool analogWrite(uint16_t data, uint8_t channel);
 
-  void analogWriteFastA(uint16_t data);
+  void analogWriteFastCH1(uint16_t data);
 
-  void analogWriteFastB(uint16_t data);
+  void analogWriteFastCH2(uint16_t data);
   
   // Data outputs can be buffered (true) or non-buffered (false)
   void setBuffer(bool buffered);

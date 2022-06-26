@@ -1,0 +1,27 @@
+# Syntax Colouring Map For Simple_MCP4922
+
+# Data types (KEYWORD1)
+Simple_MCP4922	KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+begin	KEYWORD2
+init	KEYWORD2
+
+setAlternatePins	KEYWORD2
+setBuffer	KEYWORD2
+setGain	KEYWORD2
+
+analogWrite	KEYWORD2
+analogWriteFastCH1	KEYWORD2
+analogWriteFastCH2	KEYWORD2
+
+freeMOSI	KEYWORD2
+freeMISO	KEYWORD2
+freeSCK	KEYWORD2
+
+end	KEYWORD2
+
+# Instances (KEYWORD2)
+
+# Constants (LITERAL1)
+MCP4922_MAX	LITERAL1

@@ -29,14 +29,10 @@ void setup()
 
 void loop() 
 {
-
   // Writes to channel 1
   DAC.analogWrite(data_array[i], 1);
   if(i < 5) i++;
   else i = 0;
 
-  delay(600); //msas
-
+  delay(600); //ms
 }
-
-// END OF FILE

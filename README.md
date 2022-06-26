@@ -26,8 +26,10 @@ A SPI hardware interface tipically has 4 pins: MISO for data input, MOSI for dat
 
 For example, seting MISO pin as pinMode(CS, OUTPUT) will give the GPIO the control of the pin even tho the SPI interface was using it. Athough this *works*, I included dedicated functions to change the pin control "completely". A multiplexor sets which system controls each pin, so its possible to write to the register in order to modify which system can use it.
 
-    // PORTx_PCRn, for pin 12 (default MOSI):
-    PORTC_PCR7 = (PORTC_PCR7 & 0xFFFFF8FF) | (001 << 8);
+```cpp
+// PORTx_PCRn, for pin 12 (default MOSI):
+PORTC_PCR7 = (PORTC_PCR7 & 0xFFFFF8FF) | (001 << 8);
+```
 
 Bits 8-10 in the register control the multiplexor as shown in the [manual](https://www.pjrc.com/teensy/K20P64M72SF1RM.pdf) for Tensy 3.2 on page 228.
 
@@ -36,7 +38,7 @@ Bits 8-10 in the register control the multiplexor as shown in the [manual](https
 - **freeCSK()** Gives GPIO the control of pin 13 or pin 14 if alternatePins is *True*.
 - Freeing CS is not necessary since its not controlled by the library.
 
-## Ouputting data
+### Ouputting data
 
 - **analogWrite(uint16_t data, uint8_t channel)** Channel can be either 0 (OutputA) or 1 (OutputB).
 - **analogWriteFastCH1(uint16_t data)** and **analogWriteFastCH2(uint16_t data)** ignore buffer and gain settings and use the default values (unbuffered and G=1).
@@ -66,32 +68,38 @@ The rest of the pins are listed in the datasheet, a full list of connections for
 
 The code below shows *Simple_MCP4922_example.ino*. It's written to output values on channel A (or 1), connections to the DAC should be as shown in the table above.
 
-    #include "Simple_MCP4922.h"
+```cpp
+#include "Simple_MCP4922.h"
 
-    #define T_PIN_CS 10
+#define T_PIN_CS 10
 
-    uint16_t data_array[6] = {0, 819, 1638, 2457, 3276, 4095};
-    uint8_t i = 0;
+uint16_t data_array[6] = {0, 819, 1638, 2457, 3276, 4095};
+uint8_t i = 0;
 
-    // Create a Simple_MCP4922 object.
-    Simple_MCP4922 DAC;
+// Create a Simple_MCP4922 object.
+Simple_MCP4922 DAC;
 
-    void setup() 
-    {    
-      // Start the SPI hardware controller.
-      // The Simple_MCP4922 library takes care of importing
-      // the SPI and setting up the chip select pin.
-      DAC.begin(T_PIN_CS, false);
-    }
+void setup() 
+{    
+  // Start the SPI hardware controller.
+  // The Simple_MCP4922 library takes care of importing
+  // the SPI and setting up the chip select pin.
+  DAC.begin(T_PIN_CS, false);
+}
 
-    void loop() 
-    {
+void loop() 
+{
 
-      // Writes to channel 1
-      DAC.analogWrite(data_array[i], 1);
-      if(i < 5) i++;
-      else i = 0;
+  // Writes to channel 1
+  DAC.analogWrite(data_array[i], 1);
+  if(i < 5) i++;
+  else i = 0;
 
-      delay(600); //msas
-      
-    }
+  delay(600); //msas
+  
+}
+```
+
+## Future
+
+Possibly adding support for different Teensy boards.
