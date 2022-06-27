@@ -30,7 +30,7 @@ void setup()
 void loop() 
 {
   // Writes to channel 1
-  DAC.analogWrite(data_array[i], 1);
+  DAC.analogWrite(data_array[i], 0);
   if(i < 5) i++;
   else i = 0;
 
