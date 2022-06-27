@@ -21,8 +21,10 @@ void loop() {
   DAC.analogWrite(data_array_2[j],1);
 
   //Using analogWriteFast
+  /*
   DAC.analogWriteFastCH1(data_array_1[i]);
   DAC.analogWriteFastCH2(data_array_2[j]);
+  */
   
   if(i < 5) i++;
   else i = 0;
